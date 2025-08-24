@@ -1,0 +1,34 @@
+{
+  "name": "dynamic-todo-list",
+  "version": "1.0.0",
+  "description": "A dynamic Todo List web application built with Node.js, Express, and EJS",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "todo",
+    "task-manager",
+    "express",
+    "ejs",
+    "nodejs",
+    "web-app",
+    "crud",
+    "responsive"
+  ],
+  "author": "Full-Stack Developer",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2",
+    "ejs": "^3.1.9"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  },
+  "engines": {
+    "node": ">=14.0.0",
+    "npm": ">=6.0.0"
+  }
+}

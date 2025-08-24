@@ -1,0 +1,25 @@
+<header class="header">
+    <div class="container">
+        <div class="header-content">
+            <div class="logo">
+                <i class="fas fa-check-double"></i>
+                <h1>TodoMaster</h1>
+            </div>
+            <nav class="nav">
+                <div class="nav-stats">
+                    <div class="stat-item">
+                        <i class="fas fa-tasks"></i>
+                        <span>Total: <%= totalCount || 0 %></span>
+                    </div>
+                    <div class="stat-item">
+                        <i class="fas fa-clock"></i>
+                        <span id="currentTime"></span>
+                    </div>
+                </div>
+            </nav>
+        </div>
+        <div class="header-subtitle">
+            <p>Stay organized, stay productive. Manage your tasks efficiently.</p>
+        </div>
+    </div>
+</header>

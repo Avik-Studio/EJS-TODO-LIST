@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic Todo List - Stay Organized</title>
+    <link rel="stylesheet" href="/style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Header -->
+    <%- include('partials/header') %>
+    
+    <main class="main-content">
+        <div class="container">
+            <!-- Add Todo Section -->
+            <section class="add-todo-section">
+                <div class="add-todo-container">
+                    <h2><i class="fas fa-plus-circle"></i> Add New Task</h2>
+                    <form id="addTodoForm" class="add-todo-form">
+                        <div class="form-group">
+                            <input 
+                                type="text" 
+                                id="taskInput" 
+                                name="task" 
+                                placeholder="Enter your task..." 
+                                class="task-input"
+                                maxlength="200"
+                            >
+                            <select id="prioritySelect" name="priority" class="priority-select">
+                                <option value="low">Low Priority</option>
+                                <option value="medium" selected>Medium Priority</option>
+                                <option value="high">High Priority</option>
+                            </select>
+                            <button type="submit" class="add-btn">
+                                <i class="fas fa-plus"></i> Add Task
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </section>
+
+            <!-- Filter Section -->
+            <section class="filter-section">
+                <div class="filter-container">
+                    <h3><i class="fas fa-filter"></i> Filter by Priority</h3>
+                    <div class="filter-buttons">
+                        <a href="/" class="filter-btn <%= selectedPriority === 'all' ? 'active' : '' %>">
+                            <i class="fas fa-list"></i> All (<%= totalCount %>)
+                        </a>
+                        <a href="/?priority=high" class="filter-btn high <%= selectedPriority === 'high' ? 'active' : '' %>">
+                            <i class="fas fa-exclamation-triangle"></i> High Priority
+                        </a>
+                        <a href="/?priority=medium" class="filter-btn medium <%= selectedPriority === 'medium' ? 'active' : '' %>">
+                            <i class="fas fa-minus-circle"></i> Medium Priority
+                        </a>
+                        <a href="/?priority=low" class="filter-btn low <%= selectedPriority === 'low' ? 'active' : '' %>">
+                            <i class="fas fa-arrow-down"></i> Low Priority
+                        </a>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Todo List Section -->
+            <section class="todo-list-section">
+                <div class="todo-header">
+                    <h2><i class="fas fa-tasks"></i> Your Tasks</h2>
+                    <span class="task-count">Showing <%= filteredCount %> of <%= totalCount %> tasks</span>
+                </div>
+                
+                <div id="todoList" class="todo-list">
+                    <% if (todos.length === 0) { %>
+                        <div class="empty-state">
+                            <i class="fas fa-clipboard-list"></i>
+                            <h3>No tasks found</h3>
+                            <p>
+                                <% if (selectedPriority !== 'all') { %>
+                                    No tasks with <%= selectedPriority %> priority. <a href="/">View all tasks</a>
+                                <% } else { %>
+                                    Add your first task using the form above!
+                                <% } %>
+                            </p>
+                        </div>
+                    <% } else { %>
+                        <% todos.forEach(todo => { %>
+                            <div class="todo-item <%= todo.completed ? 'completed' : '' %>" data-id="<%= todo.id %>">
+                                <div class="todo-content">
+                                    <div class="todo-checkbox">
+                                        <input 
+                                            type="checkbox" 
+                                            id="complete-<%= todo.id %>"
+                                            class="complete-checkbox"
+                                            <%= todo.completed ? 'checked' : '' %>
+                                        >
+                                        <label for="complete-<%= todo.id %>" class="checkbox-label"></label>
+                                    </div>
+                                    
+                                    <div class="todo-details">
+                                        <span class="todo-text" data-original="<%= todo.task %>">
+                                            <%= todo.task %>
+                                        </span>
+                                        <span class="priority-badge <%= todo.priority %>">
+                                            <% if (todo.priority === 'high') { %>
+                                                <i class="fas fa-exclamation-triangle"></i> High
+                                            <% } else if (todo.priority === 'medium') { %>
+                                                <i class="fas fa-minus-circle"></i> Medium
+                                            <% } else { %>
+                                                <i class="fas fa-arrow-down"></i> Low
+                                            <% } %>
+                                        </span>
+                                    </div>
+                                </div>
+                                
+                                <div class="todo-actions">
+                                    <button class="action-btn edit-btn" title="Edit task">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button class="action-btn delete-btn" title="Delete task">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        <% }) %>
+                    <% } %>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <%- include('partials/footer') %>
+
+    <!-- Edit Modal -->
+    <div id="editModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-edit"></i> Edit Task</h3>
+                <span class="close-btn">&times;</span>
+            </div>
+            <form id="editTodoForm">
+                <div class="form-group">
+                    <label for="editTaskInput">Task:</label>
+                    <input 
+                        type="text" 
+                        id="editTaskInput" 
+                        class="task-input"
+                        maxlength="200"
+                        required
+                    >
+                </div>
+                <div class="form-group">
+                    <label for="editPrioritySelect">Priority:</label>
+                    <select id="editPrioritySelect" class="priority-select">
+                        <option value="low">Low Priority</option>
+                        <option value="medium">Medium Priority</option>
+                        <option value="high">High Priority</option>
+                    </select>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" id="cancelEdit" class="cancel-btn">Cancel</button>
+                    <button type="submit" class="save-btn">
+                        <i class="fas fa-save"></i> Save Changes
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast"></div>
+
+    <script src="/script.js"></script>
+</body>
+</html>
